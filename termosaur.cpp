@@ -60,13 +60,29 @@ void Termosaur::start() {
         return;
     }
 
-    clear();
     draw();
   }
 }
 
 void Termosaur::draw() {
+  clear();
+  drawTerrain();
   drawDino();
+}
+
+void Termosaur::drawTerrain() {
+  int i;
+
+  attron(COLOR_PAIR(5));
+  for (i = 0; i < winSize.x; i++) {
+    mvprintw(winSize.y - 1, i, "▄");
+
+    if (i == 3 && !isJump) {
+      i = 23;
+    }
+  }
+
+  attroff(COLOR_PAIR(5));
 }
 
 void Termosaur::drawDino() {
@@ -119,7 +135,7 @@ void Termosaur::clear() {
     }
   }
 
-  for (i = 0; i < winSize.y; i++) {
+  for (i = 0; i <= winSize.y; i++) {
     mvprintw(i, 0, "%s", emptyLine);
   }
 }

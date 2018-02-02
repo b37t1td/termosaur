@@ -57,6 +57,7 @@ class Termosaur {
     void stopCurses();
     void draw();
     void drawDino();
+    void drawTerrain();
     void clear();
 };
 
