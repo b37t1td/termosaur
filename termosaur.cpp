@@ -53,6 +53,9 @@ void Termosaur::start() {
 
     switch(key) {
       case ' ':
+        if (debounceTimer != 0)
+          break;
+
         isJump = true;
         jumpTimer = TIMER_RANGE * 2;
         break;
@@ -61,6 +64,12 @@ void Termosaur::start() {
     }
 
     draw();
+
+    if (key != -1) {
+      debounceTimer = TIMER_RANGE;
+    } else {
+      debounceTimer = (debounceTimer == 0 ? 0 : debounceTimer - 1);
+    }
   }
 }
 
@@ -74,6 +83,7 @@ void Termosaur::drawTerrain() {
   int i;
 
   attron(COLOR_PAIR(5));
+
   for (i = 0; i < winSize.x; i++) {
     mvprintw(winSize.y - 1, i, "▄");
 

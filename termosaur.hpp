@@ -50,6 +50,7 @@ class Termosaur {
     Point winSize;
     char *emptyLine;
     char timer;
+    char debounceTimer;
     bool isJump;
     char jumpTimer;
 
