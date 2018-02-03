@@ -2,6 +2,8 @@
 
 *A dinosaur for the terminal.*
 
+[![Dinosaur](./dinosaur.gif)](./)
+
 
 #### Installation
 

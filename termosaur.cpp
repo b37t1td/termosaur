@@ -76,6 +76,7 @@ void Termosaur::start() {
     }
 
     draw();
+    refresh();
 
     if (key != -1) {
       debounceTimer = TIMER_RANGE;
