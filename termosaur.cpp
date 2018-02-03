@@ -60,7 +60,7 @@ void Termosaur::start() {
         switch(gameState) {
           case GAME_STARTED:
             jump();
-            if (bushPos < 23 && bushPos > 6) {
+            if (bushPos < 28 && bushPos > 6) {
               score.passed++;
             }
             break;
@@ -118,13 +118,11 @@ void Termosaur::jump() {
 }
 
 void Termosaur::gameOver() {
-  mvprintw(winSize.y / 2, (winSize.x / 2) - 4, "GAME OVER");
+  mvprintw((winSize.y / 2) - 1, (winSize.x / 2) - 4, "GAME OVER");
 }
 
 void Termosaur::aiGame() {
-  if (gameState != GAME_OVER) {
-    mvprintw(winSize.y / 2, (winSize.x / 2) - (20 / 2), "Press SPACE to start");
-  }
+  mvprintw(winSize.y / 2, (winSize.x / 2) - (20 / 2), "Press SPACE to start");
 
   if (bushPos < 23 && bushPos > 10 && !isJump) {
     jump();
@@ -134,6 +132,7 @@ void Termosaur::aiGame() {
 void Termosaur::startGame() {
   gameState = GAME_STARTED;
   score = { 0, 0 };
+  bushPos = -10;
 }
 
 void Termosaur::drawScore() {
@@ -155,15 +154,13 @@ void Termosaur::drawBush() {
   if (bushPos <= (winSize.x - 5)) {
     int y = winSize.y - 1;
 
-    mvprintw(y - 5, bushPos, " █ ");
     mvprintw(y - 4, bushPos, "▄█ █▄");
     mvprintw(y - 3, bushPos, "██ ██");
     mvprintw(y - 2, bushPos + 1, "███");
     mvprintw(y - 1, bushPos + 1, "███");
-//    mvprintw(y, bushPos + 1,     "███");
   }
 
-  if (bushPos < 23 && bushPos < 6 && !isJump) {
+  if (bushPos <= 23 && bushPos <= 6 && !isJump) {
     gameState = GAME_OVER;
   }
 }
@@ -233,7 +230,7 @@ void Termosaur::clear() {
 
 Termosaur::Termosaur() {
   startCurses();
-  bushPos = 0;
+  bushPos = -10;
   gameState = GAME_AI;
 }
 
