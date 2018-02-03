@@ -57,8 +57,19 @@ void Termosaur::start() {
         if (debounceTimer != 0)
           break;
 
-        isJump = true;
-        jumpTimer = TIMER_RANGE * 2.4;
+        switch(gameState) {
+          case GAME_STARTED:
+            jump();
+            if (bushPos < 23 && bushPos > 6) {
+              score.passed++;
+            }
+            break;
+          case GAME_AI:
+          case GAME_OVER:
+            startGame();
+            break;
+        }
+
         break;
       case 'q':
         return;
@@ -76,9 +87,61 @@ void Termosaur::start() {
 
 void Termosaur::draw() {
   clear();
-  drawTerrain();
-  drawDino();
-  drawBush();
+
+  attron(COLOR_PAIR(2));
+    drawTerrain();
+    drawBush();
+  attroff(COLOR_PAIR(2));
+
+  attron(COLOR_PAIR(3));
+    drawDino();
+  attron(COLOR_PAIR(3));
+  drawScore();
+
+  switch(gameState) {
+    case GAME_AI:
+      aiGame();
+      break;
+    case GAME_OVER:
+      gameOver();
+      aiGame();
+      break;
+    case GAME_STARTED:
+      score.time++;
+      break;
+  }
+}
+
+void Termosaur::jump() {
+  isJump = true;
+  jumpTimer = TIMER_RANGE * 2.4;
+}
+
+void Termosaur::gameOver() {
+  mvprintw(winSize.y / 2, (winSize.x / 2) - 4, "GAME OVER");
+}
+
+void Termosaur::aiGame() {
+  if (gameState != GAME_OVER) {
+    mvprintw(winSize.y / 2, (winSize.x / 2) - (20 / 2), "Press SPACE to start");
+  }
+
+  if (bushPos < 23 && bushPos > 10 && !isJump) {
+    jump();
+  }
+}
+
+void Termosaur::startGame() {
+  gameState = GAME_STARTED;
+  score = { 0, 0 };
+}
+
+void Termosaur::drawScore() {
+  attron(COLOR_PAIR(5));
+
+  mvprintw(1, 1, "Score: %04d x %08d", score.passed, score.time);
+
+  attroff(COLOR_PAIR(5));
 }
 
 void Termosaur::drawBush() {
@@ -86,41 +149,35 @@ void Termosaur::drawBush() {
 
   if (bushPos <= -5) {
     srand(timer);
-    bushPos = winSize.x + (rand() % (winSize.x * 2));
+    bushPos = winSize.x + (rand() % (winSize.x));
   }
 
   if (bushPos <= (winSize.x - 5)) {
     int y = winSize.y - 1;
 
-    attron(COLOR_PAIR(2));
-
-      mvprintw(y - 3, bushPos, "▄█ █▄");
-      mvprintw(y - 2, bushPos, "██ ██");
-      mvprintw(y - 1, bushPos + 1, "███");
-      mvprintw(y, bushPos + 1,     "███");
-
-    attroff(COLOR_PAIR(2));
+    mvprintw(y - 5, bushPos, " █ ");
+    mvprintw(y - 4, bushPos, "▄█ █▄");
+    mvprintw(y - 3, bushPos, "██ ██");
+    mvprintw(y - 2, bushPos + 1, "███");
+    mvprintw(y - 1, bushPos + 1, "███");
+//    mvprintw(y, bushPos + 1,     "███");
   }
 
   if (bushPos < 23 && bushPos < 6 && !isJump) {
-    mvprintw(2, 2, "gameover");
+    gameState = GAME_OVER;
   }
 }
 
 void Termosaur::drawTerrain() {
   int i;
 
-  attron(COLOR_PAIR(5));
-
   for (i = 0; i < winSize.x; i++) {
-    mvprintw(winSize.y - 1, i, "▄");
+    mvprintw(winSize.y - 1, i, "█");
 
     if (i == 3 && !isJump) {
       i = 23;
     }
   }
-
-  attroff(COLOR_PAIR(5));
 }
 
 void Termosaur::drawDino() {
@@ -134,8 +191,6 @@ void Termosaur::drawDino() {
       isJump = false;
     }
   }
-
-  attron(COLOR_PAIR(4));
 
   mvprintw(  pos.y, pos.x, "         ▄███████▄");
   mvprintw(++pos.y, pos.x, "         ██▄██████");
@@ -158,8 +213,6 @@ void Termosaur::drawDino() {
       mvprintw(++pos.y, pos.x, "         █▄▄  ");
     }
   }
-
-  attroff(COLOR_PAIR(4));
 }
 
 void Termosaur::clear() {
@@ -181,6 +234,7 @@ void Termosaur::clear() {
 Termosaur::Termosaur() {
   startCurses();
   bushPos = 0;
+  gameState = GAME_AI;
 }
 
 Termosaur::~Termosaur() {

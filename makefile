@@ -4,11 +4,10 @@ OBJECTS=termosaur.o
 
 all: termosaur
 
-termosaur: $(OBJECTS) termosaur.hpp
+termosaur: termosaur.hpp
 	g++ $(CFLAGS) termosaur.cpp -o termosaur $(LDFLAGS)
 
 clean:
-	rm *.o
 	rm  termosaur
 
 install:

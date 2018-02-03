@@ -33,9 +33,20 @@
 #define FPS_TIMEOUT 60
 #define TIMER_RANGE 4
 
+enum GAME_STATE_TABLE {
+  GAME_STARTED,
+  GAME_OVER,
+  GAME_AI
+};
+
 struct Point {
   int x;
   int y;
+};
+
+struct Score {
+  int time;
+  int passed;
 };
 
 class Termosaur {
@@ -47,12 +58,14 @@ class Termosaur {
 
   private:
     Point winSize;
+    Score score;
     char *emptyLine;
     char timer;
     char debounceTimer;
     char jumpTimer;
     bool isJump;
     int bushPos;
+    char gameState;
 
     void startCurses();
     void stopCurses();
@@ -60,11 +73,14 @@ class Termosaur {
     void drawDino();
     void drawTerrain();
     void drawBush();
+    void drawScore();
     void clear();
 
     void gameOver();
     void aiGame();
     void startGame();
+
+    void jump();
 };
 
 #endif
