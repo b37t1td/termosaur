@@ -29,6 +29,7 @@
 
 #include <iostream>
 #include <curses.h>
+#include <stdlib.h>
 
 #include "termosaur.hpp"
 
@@ -57,7 +58,7 @@ void Termosaur::start() {
           break;
 
         isJump = true;
-        jumpTimer = TIMER_RANGE * 2;
+        jumpTimer = TIMER_RANGE * 2.4;
         break;
       case 'q':
         return;
@@ -77,6 +78,33 @@ void Termosaur::draw() {
   clear();
   drawTerrain();
   drawDino();
+  drawBush();
+}
+
+void Termosaur::drawBush() {
+  bushPos -= 3;
+
+  if (bushPos <= -5) {
+    srand(timer);
+    bushPos = winSize.x + (rand() % (winSize.x * 2));
+  }
+
+  if (bushPos <= (winSize.x - 5)) {
+    int y = winSize.y - 1;
+
+    attron(COLOR_PAIR(2));
+
+      mvprintw(y - 3, bushPos, "▄█ █▄");
+      mvprintw(y - 2, bushPos, "██ ██");
+      mvprintw(y - 1, bushPos + 1, "███");
+      mvprintw(y, bushPos + 1,     "███");
+
+    attroff(COLOR_PAIR(2));
+  }
+
+  if (bushPos < 23 && bushPos < 6 && !isJump) {
+    mvprintw(2, 2, "gameover");
+  }
 }
 
 void Termosaur::drawTerrain() {
@@ -152,6 +180,7 @@ void Termosaur::clear() {
 
 Termosaur::Termosaur() {
   startCurses();
+  bushPos = 0;
 }
 
 Termosaur::~Termosaur() {

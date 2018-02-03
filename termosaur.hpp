@@ -46,20 +46,25 @@ class Termosaur {
     void start();
 
   private:
-    WINDOW *win;
     Point winSize;
     char *emptyLine;
     char timer;
     char debounceTimer;
-    bool isJump;
     char jumpTimer;
+    bool isJump;
+    int bushPos;
 
     void startCurses();
     void stopCurses();
     void draw();
     void drawDino();
     void drawTerrain();
+    void drawBush();
     void clear();
+
+    void gameOver();
+    void aiGame();
+    void startGame();
 };
 
 #endif
